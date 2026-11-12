@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2006 필리핀 비전트립 지도</title>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f7f4f6; --surface:#fff; --ink:#24202a; --muted:#6c6573; --line:#e4dde3; --accent:#c2457e; --accent-soft:#f6dfea;
+  --d1:#7a7f8c; --d2:#2f8f83; --d3:#d0782b; --d4:#3f62c7; --d5:#9b4fb4; --d6:#4d5560;
+  --ok:#2c7a4b; --ok-bg:#e1f2e7; --est:#9a6a12; --est-bg:#f8edd6; --plan:#5d6470; --plan-bg:#ebedf0;
+  --body:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif; --display:"Gowun Batang",serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{font-family:var(--body);color:var(--ink);background:var(--paper);display:grid;grid-template-columns:400px 1fr;height:100%;font-size:14.5px;line-height:1.55}
+aside{display:flex;flex-direction:column;border-right:1px solid var(--line);background:var(--surface);min-height:0}
+.top{padding:16px 18px 10px;border-bottom:1px solid var(--line)}
+.eyebrow{font-size:12px;color:var(--accent);font-weight:700}
+h1{font-family:var(--display);font-size:24px;margin:2px 0 8px;line-height:1.2}
+.tabs{display:flex;flex-wrap:wrap;gap:6px}
+.tab{border:1px solid var(--line);background:var(--paper);border-radius:999px;padding:4px 12px;font:500 13px var(--body);cursor:pointer;color:var(--ink)}
+.tab[aria-pressed="true"]{background:var(--c,var(--ink));border-color:var(--c,var(--ink));color:#fff}
+.list{overflow-y:auto;padding:8px 18px 30px;flex:1}
+.day{padding:12px 0 6px;border-bottom:1px solid var(--line)}
+.dayhead{display:flex;align-items:center;gap:10px;cursor:pointer}
+.dn{font-family:var(--display);font-size:22px;color:var(--c);width:26px}
+.dt{font-weight:700;flex:1}
+.route{font-size:12.5px;color:var(--muted);margin:2px 0 6px 36px}
+.stop{margin-left:36px;padding:8px 10px;border-radius:10px;cursor:pointer;border:1px solid transparent}
+.stop:hover{background:var(--paper)}
+.stop.on{background:var(--accent-soft);border-color:var(--c)}
+.st{display:flex;gap:8px;align-items:baseline}
+.time{font-weight:700;color:var(--c);font-variant-numeric:tabular-nums;min-width:42px}
+.name{font-weight:700}
+.tag{font-size:11px;font-weight:700;border-radius:999px;padding:0 7px;margin-left:4px}
+.tag.확인{color:var(--ok);background:var(--ok-bg)} .tag.추정{color:var(--est);background:var(--est-bg)} .tag.일정표{color:var(--plan);background:var(--plan-bg)}
+.note{color:var(--muted);font-size:13px;margin:2px 0 6px 50px}
+.acts{display:flex;flex-wrap:wrap;gap:6px;margin-left:50px}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:3px 9px;font:500 12.5px var(--body);cursor:pointer;color:var(--ink);text-decoration:none}
+.btn:hover{border-color:var(--ink)}
+.btn.main{background:var(--c);border-color:var(--c);color:#fff}
+details{margin:6px 0 4px 36px;font-size:12.5px;color:var(--muted)}
+details p{background:var(--accent-soft);color:var(--ink);padding:8px 10px;border-radius:8px;margin:6px 0 0}
+main{position:relative;min-height:0;display:flex;flex-direction:column}
+.bar{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--surface);border-bottom:1px solid var(--line);flex-wrap:wrap}
+.bar b{font-size:15px}
+.bar .sp{flex:1}
+iframe{border:0;width:100%;flex:1;min-height:400px;background:#e8eef1}
+.tip{font-size:12px;color:var(--muted)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (max-width:820px){
+  body{grid-template-columns:1fr;grid-template-rows:62vh auto;height:auto}
+  main{order:-1;height:62vh;position:sticky;top:0;z-index:2}
+  aside{border-right:0}
+  .list{overflow:visible}
+}
+</style>
+</head>
+<body>
+<aside>
+  <div class="top">
+    <div class="eyebrow">2006년 8월 첫째 주 · 청년부 단기선교</div>
+    <h1>필리핀 비전트립</h1>
+    <div class="tabs" id="tabs"></div>
+  </div>
+  <div class="list" id="list"></div>
+</aside>
+<main>
+  <div class="bar"><b id="cap">전체 일정</b><span class="sp"></span><a class="btn" id="open" target="_blank" rel="noopener">구글지도 앱/웹에서 크게 열기</a></div>
+  <iframe id="map" title="구글 지도" allowfullscreen loading="eager" referrerpolicy="no-referrer-when-downgrade"></iframe>
+</main>
+<script>
+const DATA = {"days": [{"id": "mon", "d": "월", "title": "출국 · 안티폴로 도착", "color": "--d1", "route": [["naia", "anti"]], "boat": [], "dir": "https://www.google.com/maps/dir/?api=1&travelmode=driving&origin=14.5123,121.0165&destination=14.5847,121.1757", "dirlabel": "공항 → 안티폴로 (약 25km)", "stops": [{"t": "13:00", "n": "교회 집결 · 출발", "s": "일정표", "note": "15:00 교회 출발 → 17:00 인천공항 → 20:10 탑승"}, {"t": "23:00", "n": "마닐라 니노이 아키노 공항", "k": "naia", "pid": "ChIJd0270sXOlzMREUQRimL6JIo", "q": "Ninoy Aquino International Airport", "s": "일정표", "note": "약 3시간 50분 비행 후 도착"}, {"t": "0:00", "n": "안티폴로 숙소", "k": "anti", "pid": "ChIJxRCDjQy_lzMRo4C_f1qO3DQ", "q": "Antipolo", "s": "추정", "note": "정확한 숙소 위치는 미상. 황량곤 선교사님 사역지(카인타) 인근"}], "sched": "13:00 교회 집결 및 점검 · 15:00 교회 출발 · 17:00 인천공항 도착 · 19:40 출국수속 완료 · 20:10 탑승 완료 · 23:00 필리핀 도착 · 0:00 안티폴로 숙소 도착 · 취침"}, {"id": "tue", "d": "화", "title": "교도소 공연 · 딸림섬", "color": "--d2", "route": [["anti", "jail"], ["jail", "port"], ["port", "anti"]], "boat": [["port", "pier"]], "dir": "https://www.google.com/maps/dir/?api=1&travelmode=driving&origin=14.5847,121.1757&destination=14.4617,121.1913&waypoints=14.5744,121.1476", "dirlabel": "안티폴로 → 교도소 → 비낭고난 선착장 (배 구간 제외)", "stops": [{"t": "9:50", "n": "리잘 주립교도소 (니잘교도소)", "k": "jail", "pid": "ChIJzbA4I2jHlzMRypJlLa9BlAA", "q": "Rizal Provincial Jail", "s": "추정", "note": "10:00–12:00 공연. 예배당 연극 사진 속 교도관 계급 표기 게시판"}, {"t": "13:00", "n": "비낭고난 선착장 → 배", "k": "port", "pid": "ChIJOSq52ZjDlzMRhmauWTAqUgc", "q": "Binangonan Talim Island Boat Service", "s": "추정", "note": "딸림섬 남단까지 배로 1시간 이상 (섬 북쪽 마을보다 멀어서 2시간 이동 일정과 맞음)"}, {"t": "15:00", "n": "딸림섬 남단 작은 선착장", "k": "pier", "q": "Barangay Talim Binangonan Talim Island", "s": "추정", "note": "지붕 얹은 나무 방카 1~2척(20명씩), 얕은 물에 짧게 튀어나온 작은 선착장. 스피커·앰프·선물 들고 나무 우거진 회색 비포장 오르막길로"}, {"t": "15:30", "n": "Talim Elementary School · Talim Christian Church", "k": "talim", "pid": "ChIJ4a91kUfelzMRYaLQDm-oSBQ", "q": "Talim Elementary School Binangonan", "s": "확인", "note": "오르막 끝 바로 학교. 흰 원형 무대에서 비 맞으며 우산 쓰고 예배 → 안쪽 흰 강당 성경학교. 시간표의 딸림초등학교 = 섬 남단 바랑가이 Talim의 학교로 추정"}, {"t": "20:00", "n": "밤 배로 귀환", "k": "port", "s": "확인", "note": "다들 지쳐 잠든 배 안, 혼자 노래 흥얼거리던 기억 · 23:00 조별평가회"}], "sched": "5:30 기상 · 6:00 큐티 · 6:30 조별큐티 나눔 · 7:00 아침 · 9:00 니잘교도소 출발 · 9:50 도착 · 10:00–12:00 공연 · 12:00 점심 · 13:00–15:00 딸림섬 이동(배) · 15:00 딸림섬 도착 · 15:30–17:00 딸림초등학교 공연 · 17:30–19:00 딸림교회 성경학교 · 19:00 저녁(현지) · 20:00–23:00 숙소 이동 · 23:00 조별평가회 및 기도회 · 24:00 취침"}, {"id": "wed", "d": "수", "title": "바콜로르 · 수빅 · 산족 마을", "color": "--d3", "route": [["anti", "bacolor"], ["bacolor", "subic"], ["subic", "olo"], ["olo", "iram"]], "boat": [], "dir": "https://www.google.com/maps/dir/?api=1&travelmode=driving&origin=14.5847,121.1757&destination=14.862,120.3281&waypoints=15.0005,120.6485%7C14.8214,120.2718%7C14.8386,120.2826", "dirlabel": "안티폴로 → 바콜로르 → 수빅 → 올롱가포 → 이람", "stops": [{"t": "9:50", "n": "바콜로르 산 기예르모 성당", "k": "bacolor", "pid": "ChIJSaEZeyP2ljMRSc99y7DXDbs", "q": "San Guillermo Parish Church Bacolor", "s": "확인", "note": "피나투보 화산 진흙(라하르)에 반쯤 묻힌 성당. 낮에 방문"}, {"t": "13:00", "n": "수빅 비치호텔", "k": "subic", "q": "Subic Bay Freeport Zone hotel", "s": "추정", "note": "호텔 많은 관광지. 로비 밖 파라솔·칵테일, 밤새 번개. 발코니 바다 사진. 호텔 이름은 미상"}, {"t": "오후", "n": "올롱가포 시내 길거리", "k": "olo", "q": "Rizal Avenue Olongapo City", "s": "확인", "note": "OLONGAPO 지프니, 트라이시클, Mister Donut·약국·송금가게 간판 사진"}, {"t": "16:00", "n": "산족(아에타) 마을 성경학교", "k": "iram", "pid": "ChIJQyf8S-9xljMRfyQjk1ux7h0", "q": "Iram Olongapo", "s": "추정", "note": "버스에서 내리자 회색 블록집과 우물. 좁은 건물에 빼곡한 아이들과 예배·연극, 줄무늬 선물봉투. 이람 정착촌으로 추정"}], "sched": "5:30 기상 · 6:00 큐티 · 6:30 조별큐티 나눔 · 7:00 아침 · 8:00 수빅으로 이동 · 9:50 바꼬오성당 방문 · 10:00–12:00 수빅으로 이동 · 12:00 점심 · 13:00 비치호텔 숙소 · 16:00–18:00 산족학교 성경학교 · 18:00 저녁 · 19:00 사역준비 모임 · 20:00–23:00 조별평가회 및 기도회 · 23:00 취침"}, {"id": "thu", "d": "목", "title": "Lawin 교회 · 칼리라야로", "color": "--d4", "route": [["subic", "lawin"], ["lawin", "subic"], ["subic", "cali"]], "boat": [], "dir": "https://www.google.com/maps/dir/?api=1&travelmode=driving&origin=14.8214,120.2718&destination=14.2997,121.4975&waypoints=14.9696,120.2193", "dirlabel": "수빅 → Lawin 교회 → 칼리라야 (장거리)", "stops": [{"t": "10:00", "n": "Lawin Christian Church", "k": "lawin", "pid": "ChIJzYIsRQB5ljMRbkOot-z8i3o", "q": "Lawin Christian Church San Marcelino", "s": "확인", "note": "화창한 오전, 초원의 초가지붕 교회. 어르신들 찬송, 생필품·쌀 나눔. 교회 간판 사진으로 확인"}, {"t": "13:00", "n": "산족 마을 방문", "k": "lawin", "s": "일정표", "note": "13:00–17:00. 산 마르셀리노 일대로 추정"}, {"t": "21:00", "n": "깔릴리야 숙소 도착", "k": "cali", "pid": "ChIJeW4pZZv7lzMRdFbNg4hNZ0k", "q": "Caliraya Recreation Center", "s": "추정", "note": "계획은 3시간 이동. 2006년 도로 사정상 실제로는 더 늦게 도착했을 가능성"}], "sched": "5:30 기상 · 6:00 큐티 · 6:30 조별큐티 나눔 · 7:00 아침 · 9:00 산족교회 출발 · 9:00–9:50 산족교회 방문 · 10:00–12:00 산족교회 공연 및 쌀나눔 · 12:00 점심 · 13:00–17:00 산족방문 · 17:00 저녁 · 18:00–21:00 깔릴리야 숙소 이동 · 21:00–23:00 전체모임 및 기도회 · 23:00 취침"}, {"id": "fri", "d": "금", "title": "칼리라야 · 팍상한", "color": "--d5", "route": [["cali", "pag"], ["pag", "anti"]], "boat": [], "dir": "https://www.google.com/maps/dir/?api=1&travelmode=driving&origin=14.2997,121.4975&destination=14.5847,121.1757&waypoints=14.273,121.4555", "dirlabel": "칼리라야 → 팍상한 → 안티폴로", "stops": [{"t": "9:00", "n": "깔릴리야 = 칼리라야 리크리에이션 센터", "k": "cali", "pid": "ChIJeW4pZZv7lzMRdFbNg4hNZ0k", "q": "Caliraya Recreation Center", "s": "추정", "note": "화창한 아침, 골프장 같은 잔디마당과 야자수, 호수 물놀이 사진. 이름 발음과 위치로 추정"}, {"t": "13:00", "n": "팍상한", "k": "pag", "q": "Pagsanjan Falls", "s": "일정표", "note": "13:00–17:00 문화체험 (보트로 폭포 가는 코스로 유명)"}, {"t": "21:00", "n": "안티폴로 복귀", "k": "anti", "pid": "ChIJxRCDjQy_lzMRo4C_f1qO3DQ", "q": "Antipolo", "s": "일정표", "note": "21:00 전체모임"}], "sched": "5:30 기상 · 6:00 큐티 · 6:30 조별큐티 나눔 · 7:00 아침 · 9:00–12:00 깔릴리야 센터 문화체험 · 12:00 점심 · 13:00–17:00 팍상한 문화체험 · 17:00 저녁 · 18:00–21:00 안티폴로 이동 · 21:00–23:00 전체모임 · 23:00 취침"}, {"id": "sat", "d": "토", "title": "귀국", "color": "--d6", "route": [["anti", "naia"]], "boat": [], "dir": "https://www.google.com/maps/dir/?api=1&travelmode=driving&origin=14.5847,121.1757&destination=14.5123,121.0165", "dirlabel": "안티폴로 → 마닐라 공항", "stops": [{"t": "8:00", "n": "마닐라 공항", "k": "naia", "pid": "ChIJd0270sXOlzMREUQRimL6JIo", "q": "Ninoy Aquino International Airport", "s": "일정표", "note": "귀국 → 교회 도착 → 15:00 귀국 기도회"}], "sched": "5:30 기상 · 6:00 큐티 · 6:30 조별큐티 나눔 · 7:00 아침 · 8:00–9:00 공항 이동 · 10:00–13:00 한국 도착 · 13:00–15:00 교회 도착 · 15:00–16:00 귀국 기도회"}], "ll": {"naia": [14.5123, 121.0165], "anti": [14.5847, 121.1757], "jail": [14.5744, 121.1476], "port": [14.4617, 121.1913], "talim": [14.296, 121.2388], "pier": [14.2948, 121.2352], "bacolor": [15.0005, 120.6485], "subic": [14.8214, 120.2718], "olo": [14.8386, 120.2826], "iram": [14.862, 120.3281], "lawin": [14.9696, 120.2193], "cali": [14.2997, 121.4975], "pag": [14.273, 121.4555]}};
+const LL = DATA.ll;
+const frame=document.getElementById('map'), cap=document.getElementById('cap'), open=document.getElementById('open');
+const ll=k=>LL[k].join(',');
+function show(embed, link, title){ frame.src=embed; open.href=link; cap.textContent=title; }
+function placeView(s, title){
+  const q = s.q || s.n;
+  const embed='https://maps.google.com/maps?q='+encodeURIComponent(q)+'&ll='+ll(s.k)+'&z=15&output=embed';
+  const link='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q)+(s.pid?'&query_place_id='+s.pid:'');
+  show(embed, link, title||s.n);
+}
+function svView(s){
+  const [la,lo]=LL[s.k];
+  show('https://maps.google.com/maps?layer=c&cbll='+la+','+lo+'&cbp=12,0,0,0,0&output=svembed',
+       'https://www.google.com/maps/@?api=1&map_action=pano&viewpoint='+la+','+lo, s.n+' · 스트리트뷰');
+}
+function routeView(d){
+  const ks=d.rk; const s=ll(ks[0]); const rest=ks.slice(1).map(ll).join('+to:');
+  show('https://maps.google.com/maps?saddr='+s+'&daddr='+rest+'&dirflg=d&output=embed', d.dir, d.d+'요일 · '+d.title+' (실제 도로 경로)');
+}
+function overview(){
+  show('https://maps.google.com/maps?ll=14.62,120.85&z=9&output=embed','https://www.google.com/maps/@14.62,120.85,9z','전체 일정 · 루손 중부');
+}
+const routeKeys={mon:['naia','anti'],tue:['anti','jail','port'],wed:['anti','bacolor','subic','olo','iram'],thu:['subic','lawin','cali'],fri:['cali','pag','anti'],sat:['anti','naia']};
+DATA.days.forEach(d=>d.rk=routeKeys[d.id]);
+document.getElementById('tabs').innerHTML='<button class="tab" data-id="all" aria-pressed="true">전체</button>'+DATA.days.map(d=>`<button class="tab" data-id="${d.id}" style="--c:var(${d.color})" aria-pressed="false">${d.d}</button>`).join('');
+document.getElementById('list').innerHTML=DATA.days.map(d=>`
+ <section class="day" id="d-${d.id}" style="--c:var(${d.color})">
+  <div class="dayhead" data-route="${d.id}"><span class="dn">${d.d}</span><span class="dt">${d.title}</span><button class="btn main" data-route="${d.id}">경로 보기</button></div>
+  <div class="route">${d.dirlabel}${d.id==='tue'?' · 이후 배로 딸림섬 남단까지':''}</div>
+  ${d.stops.map((s,i)=>`<div class="stop" ${s.k?`data-day="${d.id}" data-i="${i}"`:''}>
+     <div class="st"><span class="time">${s.t}</span><span class="name">${s.n}<span class="tag ${s.s}">${s.s}</span></span></div>
+     <div class="note">${s.note}</div>
+     ${s.k?`<div class="acts"><button class="btn" data-act="place" data-day="${d.id}" data-i="${i}">지도·정보</button><button class="btn" data-act="sv" data-day="${d.id}" data-i="${i}">스트리트뷰</button><a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(s.q||s.n)}${s.pid?'&query_place_id='+s.pid:''}">사진 더보기 ↗</a></div>`:''}
+  </div>`).join('')}
+  <details><summary>원본 시간표</summary><p>${d.sched}</p></details>
+ </section>`).join('');
+const find=(id,i)=>DATA.days.find(d=>d.id===id).stops[+i];
+function mark(el){document.querySelectorAll('.stop.on').forEach(x=>x.classList.remove('on')); if(el) el.classList.add('on');}
+function tab(id){document.querySelectorAll('.tab').forEach(t=>t.setAttribute('aria-pressed',String(t.dataset.id===id)));}
+document.getElementById('list').addEventListener('click',e=>{
+  const b=e.target.closest('[data-act],[data-route],.stop[data-day]'); if(!b||e.target.closest('a')) return;
+  if(b.dataset.route){ const d=DATA.days.find(x=>x.id===b.dataset.route); routeView(d); tab(d.id); mark(null); return; }
+  const s=find(b.dataset.day,b.dataset.i); tab(b.dataset.day); mark(b.closest('.stop'));
+  if(b.dataset.act==='sv') svView(s); else placeView(s);
+});
+document.getElementById('tabs').addEventListener('click',e=>{
+  const t=e.target.closest('.tab'); if(!t) return; tab(t.dataset.id); mark(null);
+  if(t.dataset.id==='all') overview(); else { const d=DATA.days.find(x=>x.id===t.dataset.id); routeView(d); document.getElementById('d-'+d.id).scrollIntoView({behavior:'smooth',block:'start'}); }
+});
+overview();
+</script>
+</body>
+</html>
